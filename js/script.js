@@ -21,13 +21,20 @@ function addResult(res){
     trials.sort() //sort list so it's in good order.
 }
 
+function sortResults(){
+    svg.selectAll("rect")
+    .sort(function(a, b) { return b - a; })
+    .transition().duration(1000)
+    .attr("x", function(d,i){return barX(i)})
+}
+
 function updateBar(trials, speed){
 
-    
     barX.domain(d3.range(trials.length)) //update bar scale
 
     var progressBar = svg.selectAll("rect")
         .data(trials)
+
 
     progressBar.exit() //get rid of old trials
         .transition().duration(speed)
@@ -38,7 +45,6 @@ function updateBar(trials, speed){
         .transition().duration(speed)
         .attr("x", function(d,i){return barX(i)})
         .attr("width", barX.rangeBand())
-        .attr("fill", function(d){ return d == 1 ? "steelblue" : "red"})
 
     progressBar.enter() //new trials
         .append("rect")
@@ -53,6 +59,9 @@ function updateBar(trials, speed){
         .attr("height", 20)
         .attr("fill", function(d){ return d == 1 ? "steelblue" : "red"})
         .style("stroke", "black")
+        .each("end", function(d,i){ //sort results on last.
+            if(i == trials.length - 1){sortResults()}
+        })
 }
 
 updateBar(trials, 1000)
