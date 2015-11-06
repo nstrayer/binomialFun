@@ -1,6 +1,7 @@
 var width = parseInt(d3.select("body").style("width").slice(0, -2)),
     height = $(window).height() - 30,
-    padding = 20;
+    padding = 20,
+    speed = 1000;
 
 var svg = d3.select("#viz").append("svg")
     .attr("width", width)
@@ -16,11 +17,7 @@ var barX = d3.scale.ordinal()
     .domain(d3.range(trials.length))
     .rangeBands([padding*3,width - padding*3]);
 
-function addResult(res){
-    trials.push(res) //add new trial result
-    trials.sort() //sort list so it's in good order.
-}
-
+//Function for sorting the bars after adding a new trial.
 function sortResults(){
     svg.selectAll("rect")
     .sort(function(a, b) { return b - a; })
@@ -35,7 +32,6 @@ function updateBar(trials, speed){
     var progressBar = svg.selectAll("rect")
         .data(trials)
 
-
     progressBar.exit() //get rid of old trials
         .transition().duration(speed)
         .attr("x", 1000)
@@ -45,6 +41,8 @@ function updateBar(trials, speed){
         .transition().duration(speed)
         .attr("x", function(d,i){return barX(i)})
         .attr("width", barX.rangeBand())
+        .attr("y", 300)
+        .attr("fill", function(d){ return d == 1 ? "steelblue" : "red"})
 
     progressBar.enter() //new trials
         .append("rect")
@@ -63,5 +61,11 @@ function updateBar(trials, speed){
             if(i == trials.length - 1){sortResults()}
         })
 }
+
+function addResult(res){
+    trials.push(res) //add new trial result
+    updateBar(trials, speed)
+}
+
 
 updateBar(trials, 1000)
