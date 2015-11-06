@@ -7,6 +7,7 @@ function sumArray(arr){
     return(s)
 }
 
+
 // Bernoulli trial function.
 // This function takes the parameter p, which is the probability of success.
 // It returns either a 1 (success) or 0 (failure)
