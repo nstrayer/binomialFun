@@ -36,8 +36,17 @@ function updateBar(trials, speed){
     var progressBar = svg.selectAll("rect")
         .data(trials, function(d){return d.id})
 
+    progressBar.exit()
+        .transition().duration(800)
+        .delay(function(d, i) { return (trials.length - i) * 15; })
+        .attr("x", width/2)
+        .attr("y", -10)
+        .attr("width", 0)
+        .attr("height", 0)
+        .remove()
+
     progressBar //existing trials
-        .transition().duration(speed)
+        .transition().duration(0)
         .attr("x", function(d,i){return barX(i)})
         .attr("width", barX.rangeBand())
         .attr("y", 300)
@@ -49,7 +58,6 @@ function updateBar(trials, speed){
         .attr("y", -10)
         .attr("width", 20)
         .transition().duration(speed)
-        .delay(function(d,i){return Math.random()*30*i})
         .attr("x", function(d,i){return barX(i)})
         .attr("y", 300)
         .attr("width", barX.rangeBand())
@@ -64,6 +72,21 @@ function addResult(res){
     trials.sort(function compareNumbers(a, b) {return b.v - a.v;})
     updateBar(trials, speed)
 }
+
+function reset(){
+    idCounter = 1 //reset counter
+    trials = [] // empty trials storage
+    updateBar(trials, speed)
+}
+
+svg.append("circle")
+    .attr("cx", width/2)
+    .attr("cy", 55)
+    .attr("r", 25)
+    .attr("fill", "steelblue")
+    .on("click", function(){
+        addResult(bern(0.7))
+    })
 
 
 updateBar(trials, speed)
