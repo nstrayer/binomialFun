@@ -2,7 +2,9 @@ var width = parseInt(d3.select("#viz").style("width").slice(0, -2)),
     height = $(window).height() - 30,
     padding = 20,
     speed = 400,
-    theta = 0.5;
+    theta = 0.5,
+    altHypothesisVal = 0.5,
+    currentPVal;
 
 //counter for giving the trials unique values. This is important as
 //if they don't have unique ids the transitions will get all messed up due to sorting not
@@ -96,6 +98,7 @@ function confidenceInterval(trials, speed){
         .attr("x2", function(d){ return CIScale(d.ub)})
 }
 
+
 //Generate and add a new trial to the viz.
 function addResult(res){
     idCounter += 1 //increment counter
@@ -104,6 +107,8 @@ function addResult(res){
     updateBar(trials, speed)
     confidenceInterval(trials, speed)
     //code will need to go here for updating hypothesis pval
+    currentPVal = binomHypothesis(trials.length, numSuccess(trials), altHypothesisVal)
+    d3.select("#pValue").text(currentPVal)
 }
 
 //this doesn't work. Fix it later.
@@ -166,7 +171,7 @@ probOfSuccess.noUiSlider.on('change', function(values, handle, unencoded){ //wha
         // take the given value, reset all the trials and start new.
 
         reset() //reset the visualization
-        theta = p_of_success //change the theta. 
+        theta = p_of_success //change the theta.
     })
 
 //Alternative hypothesis slider
@@ -194,4 +199,6 @@ altHypothesis.noUiSlider.on('update', function(values, handle, unencoded){ //wha
 altHypothesis.noUiSlider.on('change', function(values, handle, unencoded){ //what to do when the slider is dropped.
         altHypothesisVal = +values
         //put function to do here.
+        currentPVal = binomHypothesis(trials.length, numSuccess(trials), altHypothesisVal)
+        d3.select("#pValue").text(currentPVal)
     })

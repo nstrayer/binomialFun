@@ -7,6 +7,10 @@ function sumArray(arr){
     return(s)
 }
 
+//Number of successes for getting info out of jsonified results
+function numSuccess(trials){ return sumArray(trials.map(function(d){return d.v})) }
+
+
 
 // Bernoulli trial function.
 // This function takes the parameter p, which is the probability of success.
