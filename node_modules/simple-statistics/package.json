@@ -1,0 +1,62 @@
+{
+  "name": "simple-statistics",
+  "version": "1.0.0",
+  "description": "Simple Statistics",
+  "author": {
+    "name": "Tom MacWright",
+    "email": "tom@macwright.org",
+    "url": "http://macwright.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/simple-statistics/simple-statistics.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "browserify": "^11.0.1",
+    "coveralls": "^2.11.1",
+    "eslint": "^1.1.0",
+    "faucet": "0.0.1",
+    "istanbul": "^0.3.0",
+    "random-js": "^1.0.4",
+    "science": "^1.9.2",
+    "tape": "^4.0.0",
+    "uglify-js": "^2.4.23"
+  },
+  "scripts": {
+    "test": "eslint --no-eslintrc -c .eslintrc index.js src/*.js test/*.js && tape test/*.js | faucet",
+    "cov": "istanbul cover ./node_modules/.bin/tape test/*.js && coveralls < ./coverage/lcov.info || true",
+    "build": "browserify -s ss index.js | tee dist/simple_statistics.js | uglifyjs -c -m > dist/simple_statistics.min.js",
+    "prepublish": "npm test && npm run build"
+  },
+  "main": "index.js",
+  "engines": {
+    "node": "*"
+  },
+  "license": "ISC",
+  "gitHead": "6d26e1ab821719d7cf9e26c44380e9412e6b61ae",
+  "bugs": {
+    "url": "https://github.com/simple-statistics/simple-statistics/issues"
+  },
+  "homepage": "https://github.com/simple-statistics/simple-statistics",
+  "_id": "simple-statistics@1.0.0",
+  "_shasum": "1c0d3c93f8a254834bbece986f5a15cfd8c81563",
+  "_from": "simple-statistics@",
+  "_npmVersion": "1.4.28",
+  "_npmUser": {
+    "name": "tmcw",
+    "email": "tom@macwright.org"
+  },
+  "maintainers": [
+    {
+      "name": "tmcw",
+      "email": "macwright@gmail.com"
+    }
+  ],
+  "dist": {
+    "shasum": "1c0d3c93f8a254834bbece986f5a15cfd8c81563",
+    "tarball": "http://registry.npmjs.org/simple-statistics/-/simple-statistics-1.0.0.tgz"
+  },
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/simple-statistics/-/simple-statistics-1.0.0.tgz"
+}
