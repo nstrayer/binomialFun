@@ -28,8 +28,8 @@ function waldInterval(trials){
     var intW = z * Math.sqrt((1/n) * pe*(1 - pe)) //width of the interval
     return({
         "pe": pe,
-        "lb": pe - intW,
-        "ub": pe + intW,
+        "lb": (pe - intW) < 0 ? 0: (pe - intW),
+        "ub": (pe + intW) > 1 ? 1: (pe + intW) ,
         "width": intW*2
     })
 }

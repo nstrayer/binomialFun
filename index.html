@@ -5,12 +5,33 @@
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/style.css" rel = "stylesheet">
 
-<script type="text/javascript" src="js/jquery.min.js"></script>
-<script src="js/d3.min.js"></script>
-<!-- <script src="http://d3js.org/topojson.v1.min.js"></script> -->
-<!-- <script src="http://d3js.org/queue.v1.min.js"></script> -->
+<script type = "text/javascript" src="js/jquery.min.js"></script>
+<script src = "js/d3.min.js"></script>
+<link href  = "js/nouislider.css" rel="stylesheet">
+<link href  = "js/nouislider.pips.css" rel="stylesheet">
+<script src = "js/nouislider.min.js"></script>
+
 <div id = "header"><h1></h1></div>
-<div id = "viz" class = "col-md-12 col-sm-12"></div>
+<div id = "menu" class = "col-md-4 col-sm-12">
+
+<h2> Probability of Success</h2>
+<p> Choose your probability of success: </p>
+
+<div id = "probOfSuccess" class = "col-md-12"></div>
+
+<hr>
+
+<h2>Hypothesized Probability</h2>
+
+<div id = "altHypothesis" class = "col-md-12"></div>
+
+<p> Choose your althernative hypothesis of success: </p>
+
+<p> P-Value </p>
+
+</div>
+
+<div id = "viz" class = "col-md-8 col-sm-12"></div>
 
 
 <script src = "js/statsFunctions.js"></script>
