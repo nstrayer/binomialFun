@@ -7,6 +7,10 @@ function sumArray(arr){
     return(s)
 }
 
+//Number of successes for getting info out of jsonified results
+function numSuccess(trials){ return sumArray(trials.map(function(d){return d.v})) }
+
+
 
 // Bernoulli trial function.
 // This function takes the parameter p, which is the probability of success.
@@ -47,19 +51,7 @@ function wilsonInterval(trials){
     return(waldInterval(trials)) //run the wald interval again.
 }
 
-// Binomial hypothesis test.
-// Input:
-// n = number of trials
-// x = number of successes
-// theta = alternative hypothesis.
-// Output:
-// t = test statistic
-// pVal = p-value for alternative hypothesis.
-function binomHypothesis(n,x,theta){
-    var obsTheta = x/n
-    var t = (Math.sqrt(n) * (obsTheta - theta))/(Math.sqrt(theta*(1 - theta)))
-    return t;
-}
+
 
 // gaussian error function
 function errorFunction(x) {
@@ -85,4 +77,19 @@ function errorFunction(x) {
 //Put in a test statistic and get out the p-value associated with it.
 function stdNormalCdf(z){
     return (.5 + .5 * errorFunction(z / Math.sqrt(2)) )
+}
+
+// Binomial hypothesis test. (Two sided)
+// Input:
+// n = number of trials
+// x = number of successes
+// theta = alternative hypothesis.
+// Output:
+// t = test statistic
+// pVal = p-value for alternative hypothesis.
+function binomHypothesis(n, x, theta){
+    var obsTheta = x/n
+    var t = (Math.sqrt(n) * (obsTheta - theta))/(Math.sqrt(theta*(1 - theta)))
+    // If calc p-value in correct direction.
+    return t < 0 ? 2*(stdNormalCdf(t)) : 2*(1 - stdNormalCdf(t));
 }
