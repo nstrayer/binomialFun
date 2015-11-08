@@ -1,7 +1,8 @@
 var width = parseInt(d3.select("#viz").style("width").slice(0, -2)),
     height = $(window).height() - 30,
     padding = 20,
-    speed = 400;
+    speed = 400,
+    theta = 0.5;
 
 //counter for giving the trials unique values. This is important as
 //if they don't have unique ids the transitions will get all messed up due to sorting not
@@ -109,7 +110,7 @@ function addResult(res){
 function addLots(n){
     d3.range(n).forEach(function(){
         console.log("go!")
-        setTimeout(addResult(bern(0.7)) , 200)
+        setTimeout(addResult(bern(theta)) , 200)
     })
 }
 
@@ -128,7 +129,7 @@ svg.append("circle")
     .attr("r", 25)
     .attr("fill", "steelblue")
     .on("click", function(){
-        addResult(bern(0.7))
+        addResult(bern(theta))
     })
 
 //kick it off.
@@ -160,9 +161,12 @@ probOfSuccess.noUiSlider.on('update', function(values, handle, unencoded){ //wha
     })
 
 probOfSuccess.noUiSlider.on('change', function(values, handle, unencoded){ //what to do when the slider is dropped.
-        confLevel = +values
-        console.log(confLevel)
+        p_of_success = +values
         // updatePoints(rawData, confLevel, sizeVal)
+        // take the given value, reset all the trials and start new.
+
+        reset() //reset the visualization
+        theta = p_of_success //change the theta. 
     })
 
 //Alternative hypothesis slider
