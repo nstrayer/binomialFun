@@ -4,7 +4,10 @@ var width = parseInt(d3.select("#viz").style("width").slice(0, -2)),
     speed = 400,
     theta = 0.5,
     altHypothesisVal = 0.5,
-    currentPVal;
+    currentPVal,
+    failColor = "#e41a1c"
+    successColor = "#377eb8",
+    buttonColor = "#4daf4a";
 
 //counter for giving the trials unique values. This is important as
 //if they don't have unique ids the transitions will get all messed up due to sorting not
@@ -27,11 +30,13 @@ var CIScale = d3.scale.linear()
     .domain([0,1])
     .range([padding*3,width - padding*3]);
 
+//make a g for holding the progressbar and confidence interval.
+var trialViz = d3.select("svg").append("g").attr("class", "trialViz")
 
 function updateBar(trials, speed){
     barX.domain(d3.range(trials.length)) //update bar scale
 
-    var progressBar = svg.selectAll("rect")
+    var progressBar = trialViz.selectAll(".progressBar")
         .data(trials, function(d){return d.id})
 
     progressBar.exit()
@@ -48,10 +53,11 @@ function updateBar(trials, speed){
         .attr("x", function(d,i){return barX(i)})
         .attr("width", barX.rangeBand())
         .attr("y", 300)
-        .attr("fill", function(d){ return d.v == 1 ? "steelblue" : "red"})
+        .attr("fill", function(d){ return d.v == 1 ? successColor : failColor})
 
     progressBar.enter() //new trials
         .append("rect")
+        .attr("class", "progressBar")
         .attr("x", width/2)
         .attr("y", -10)
         .attr("width", 20)
@@ -60,7 +66,7 @@ function updateBar(trials, speed){
         .attr("y", 300)
         .attr("width", barX.rangeBand())
         .attr("height", 20)
-        .attr("fill", function(d){ return d.v == 1 ? "steelblue" : "red"})
+        .attr("fill", function(d){ return d.v == 1 ? successColor : failColor})
         .style("stroke", "black")
 }
 
@@ -70,7 +76,7 @@ function confidenceInterval(trials, speed){
     //get our data on the interval by extracting trial results
     var intervalData = [wilsonInterval(trials.map(function(d){return d.v}))];
 
-    var confInt = svg.selectAll("line")
+    var confInt = trialViz.selectAll("line")
         .data(intervalData, function(d,i){return i;})
 
     confInt.exit()
@@ -127,15 +133,30 @@ function reset(){
     confidenceInterval([], speed)
 }
 
-//button for new trial.
-svg.append("circle")
-    .attr("cx", width/2)
-    .attr("cy", 55)
-    .attr("r", 25)
-    .attr("fill", "steelblue")
-    .on("click", function(){
-        addResult(bern(theta))
-    })
+//button for generating a new trial.
+var buttonStuff = [{color: buttonColor, text: "Generate Trial"}]
+
+var genButton = d3.select("svg").append("g")
+    .attr("class", "genButton")
+    .attr("transform", "translate(" + (width/2) + ",100)")
+
+genButton.append("rect")
+    .attr("x", -75)
+    .attr("y", -25)
+    .attr("rx", 15)
+    .attr("ry", 15)
+    .attr("width", 150)
+    .attr("height", 40)
+    .attr("fill", buttonColor )
+    .attr("opacity", 0.5)
+    .on("click", function(){ addResult(bern(theta)) })
+
+genButton.append("text")
+    .attr("text-anchor", "middle")
+    .text("Generate New Trial")
+    .on("click", function(){ addResult(bern(theta)) })
+    .style("pointer-events", "none")
+    .style("user-select", "none")
 
 //kick it off.
 updateBar(trials, speed)
