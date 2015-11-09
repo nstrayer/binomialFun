@@ -51,3 +51,7 @@ strong.choosen{
 }
 
 svg text::selection { background: none; }
+
+.results {
+    font-weight: bold;
+}

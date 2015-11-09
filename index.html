@@ -33,14 +33,6 @@
 
     <div id = "probOfSuccess" class = "valueSlider col-md-12"></div>
     <p></p>
-
-    <h2 class = "topPadding">Or put in custom trial values:</h2>
-
-    <form>
-      Number of trials: <input type="text" name="trials" id = "customN" size="8">
-      Number of successes: <input type="text" name="successes" id = "customX" size="8">
-    <input type="button" onclick="customNX()" value="Submit">
-    </form>
 </div>
 
 <hr>
@@ -51,8 +43,21 @@
     <p class = "bottomPadding"> Choose your null hypothesis: </p>
 
     <div id = "altHypothesis" class = "valueSlider col-md-12"></div>
+</div>
+<hr>
+<div class = "menuSection">
 
-    <h2 class = "topPadding"> P-Value: <span id = "pValue"></span></h3>
+    <h2>Results:</h2>
+
+    <form>
+      <span class = "results"> Number of trials:</span>
+      <input type="text" name="trials" id = "customN" size="8">
+      <span class = "results"> Number of successes:</span>
+      <input type="text" name="successes" id = "customX" size="8">
+    <input type="button" onclick="customNX()" value="Submit">
+    </form>
+
+    <span class = "results"> P-Value: <span id = "pValue"></span></h3>
 </div>
 
 </div>

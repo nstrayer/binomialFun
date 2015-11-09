@@ -36,8 +36,8 @@ function updateBar(trials, speed){
         .data(trials, function(d){return d.id})
 
     progressBar.exit()
-        .transition().duration(800)
-        .delay(function(d, i) { return (trials.length - i) * 15; })
+        .transition().duration(speed)
+        .delay(function(d, i) { return trials.length > 150 ? 0: (trials.length - i) * 15; })
         .attr("y", -10)
         .attr("width", 0)
         .attr("height", 0)
@@ -49,6 +49,7 @@ function updateBar(trials, speed){
         .attr("width", barX.rangeBand())
         .attr("y", 300)
         .attr("fill", function(d){ return d.v == 1 ? successColor : failColor})
+        .style("stroke-width", trials.length > 150 ? 0 : 0.5)
 
     progressBar.enter() //new trials
         .append("rect")
@@ -63,6 +64,7 @@ function updateBar(trials, speed){
         .attr("height", 20)
         .attr("fill", function(d){ return d.v == 1 ? successColor : failColor})
         .style("stroke", "black")
+        .style("stroke-width", trials.length > 150 ? 0 : 0.5) //dont have borders if there are a lot of trials
 }
 
 //Draws the confidence interval for the current trials.
@@ -110,6 +112,10 @@ function addResult(res){
     currentPVal = binomHypothesis(trials.length, numSuccess(trials), altHypothesisVal) //update the p-value
     var dispPVal = Math.round(currentPVal*1000)/1000 //format pvalue for display
     d3.select("#pValue").text(dispPVal == 0? "<0.001": dispPVal) //print
+
+    //update the n and x boxes too.
+    document.getElementById("customN").value = trials.length;
+    document.getElementById("customX").value = numSuccess(trials);
 }
 //Allow the user to input a custom n and x value and then update the trials bar.
 function customNX(){
@@ -143,6 +149,10 @@ function reset(){
     updateBar(trials, speed)
     confidenceInterval([], speed)
     svg.select("line").remove()
+
+    //update the n and x boxes too.
+    document.getElementById("customN").value = 0;
+    document.getElementById("customX").value = 0;
 }
 
 //button for generating a new trial.
