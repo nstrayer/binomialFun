@@ -69,11 +69,6 @@ function errorFunction(x) {
         0.17087277 * Math.pow(t, 9));
 
     return x >= 0 ? (1 - tau) : (tau - 1);
-    // if (x >= 0) {
-    //     return 1 - tau;
-    // } else {
-    //     return tau - 1;
-    // }
 }
 
 //Put in a test statistic and get out the p-value associated with it.

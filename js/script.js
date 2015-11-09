@@ -104,22 +104,37 @@ function confidenceInterval(trials, speed){
 function addResult(res){
     idCounter += 1 //increment counter
     trials.push({"v":res, "id": idCounter}) //add new trial result
-    trials.sort(function compareNumbers(a, b) {return b.v - a.v;})
-    updateBar(trials, speed)
-    confidenceInterval(trials, speed)
-    //code will need to go here for updating hypothesis pval
-    currentPVal = binomHypothesis(trials.length, numSuccess(trials), altHypothesisVal)
-    var dispPVal = Math.round(currentPVal*1000)/1000
-    d3.select("#pValue").text(dispPVal == 0? "<0.001": dispPVal)
+    trials.sort(function compareNumbers(a, b) {return b.v - a.v;}) //sort results
+    updateBar(trials, speed) //update the trials bar with the new trial
+    confidenceInterval(trials, speed) //update the confidence interval
+    currentPVal = binomHypothesis(trials.length, numSuccess(trials), altHypothesisVal) //update the p-value
+    var dispPVal = Math.round(currentPVal*1000)/1000 //format pvalue for display
+    d3.select("#pValue").text(dispPVal == 0? "<0.001": dispPVal) //print
+}
+//Allow the user to input a custom n and x value and then update the trials bar.
+function customNX(){
+    //grab values from the user form
+    var n = +document.getElementById("customN").value;
+    var x = +document.getElementById("customX").value;
+
+    //if the user accidentally put more successes than trials fix it.
+    if(x > n){document.getElementById("customX").value = n}
+
+    var newTrials = [] //initialize holder for new trials
+    for(var i = 0; i < n; i++){
+        idCounter += 1 //increment counter
+        //add ones until successes are done then finish with zeros.
+        i < x ? newTrials.push({"v":1, "id": idCounter})
+        : newTrials.push({"v":0, "id": idCounter})
+    }
+    trials = newTrials; //set global trials to our newly generated trials
+    updateBar(trials, speed) //update the bar.
+    confidenceInterval(trials, speed) //update the confidence interval
+    currentPVal = binomHypothesis(trials.length, numSuccess(trials), altHypothesisVal) //update the p-value
+    var dispPVal = Math.round(currentPVal*1000)/1000 //format pvalue for display
+    d3.select("#pValue").text(dispPVal == 0? "<0.001": dispPVal) //print
 }
 
-//this doesn't work. Fix it later.
-function addLots(n){
-    d3.range(n).forEach(function(){
-        console.log("go!")
-        setTimeout(addResult(bern(theta)) , 200)
-    })
-}
 
 //remove all the trials.
 function reset(){
@@ -158,7 +173,6 @@ genButton.append("text")
 //kick it off.
 updateBar(trials, speed)
 
-
 //--------------------------------------------------------------------------------------------
 //Slider stuff: ------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------
@@ -192,7 +206,6 @@ probOfSuccess.noUiSlider.on('change', function(values, handle, unencoded){ //wha
     })
 
 //Alternative hypothesis slider
-
 var altHypothesis = document.getElementById('altHypothesis');
 
 noUiSlider.create(altHypothesis, {
@@ -211,11 +224,11 @@ for ( var i = 0; i < tipHandles2.length; i++ ){
 
 altHypothesis.noUiSlider.on('update', function(values, handle, unencoded){ //what to do when the slider is moved.
         tooltips2[handle].innerHTML = values[handle];
-    })
+})
 
 altHypothesis.noUiSlider.on('change', function(values, handle, unencoded){ //what to do when the slider is dropped.
         altHypothesisVal = +values
         currentPVal = binomHypothesis(trials.length, numSuccess(trials), altHypothesisVal)
         var dispPVal = Math.round(currentPVal*1000)/1000
         d3.select("#pValue").text(dispPVal == 0? "<0.001": dispPVal)
-    })
+})
