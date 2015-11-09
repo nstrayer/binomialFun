@@ -16,6 +16,7 @@
 
 <div class = "menuSection">
     <h1>Binomially Distributed Fun!</h1>
+    <hr>
     <p>Click the button to generate a result from a Bernoulli trial. As you generate
         more results you get wonderfully <a href = "https://en.wikipedia.org/wiki/Binomial_distribution">
         binomially distributed </a> data.
@@ -28,7 +29,7 @@
         Note how the confidence interval changes as you
         generate more trials and the p-value shifts depending on your most recent Bernoulli trial.
     </p>
-    <h2>Probability of Success</h2>
+    <h3>Probability of Success</h3>
     <p>Choose your probability of success: </p>
 
     <div id = "probOfSuccess" class = "valueSlider col-md-12"></div>
@@ -38,7 +39,7 @@
 <hr>
 
 <div class = "menuSection">
-    <h2>Hypothesized Probability</h2>
+    <h3>Hypothesized Probability</h3>
 
     <p class = "bottomPadding"> Choose your null hypothesis: </p>
 
@@ -47,8 +48,9 @@
 <hr>
 <div class = "menuSection">
 
-    <h2>Results:</h2>
-
+    <h3>Results:</h3>
+    <p>Note: you can also type in a custom number of trials and successes and hit
+        submit to update the visualization. </p>
     <form>
       <span class = "results"> Number of trials:</span>
       <input type="text" name="trials" id = "customN" size="8">
