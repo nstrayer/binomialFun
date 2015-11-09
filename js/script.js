@@ -1,3 +1,4 @@
+//start by declaring and initializing a bunch of variables.
 var width = parseInt(d3.select("#viz").style("width").slice(0, -2)),
     height = $(window).height() - 30,
     padding = 20,
@@ -5,16 +6,11 @@ var width = parseInt(d3.select("#viz").style("width").slice(0, -2)),
     theta = 0.5,
     altHypothesisVal = 0.5,
     currentPVal,
+    trials = [],
+    idCounter = 1, //counter for giving the trials unique values. Need ids for object consistancy
     failColor = "#e41a1c"
     successColor = "#377eb8",
     buttonColor = "#4daf4a";
-
-//counter for giving the trials unique values. This is important as
-//if they don't have unique ids the transitions will get all messed up due to sorting not
-//behaving well with identical valued data.
-var idCounter = 1
-
-var trials = [] //initialize a trial holder
 
 var svg = d3.select("#viz").append("svg")
     .attr("width", width)
@@ -42,7 +38,6 @@ function updateBar(trials, speed){
     progressBar.exit()
         .transition().duration(800)
         .delay(function(d, i) { return (trials.length - i) * 15; })
-        .attr("x", width/2)
         .attr("y", -10)
         .attr("width", 0)
         .attr("height", 0)
@@ -132,6 +127,7 @@ function reset(){
     trials = [] // empty trials storage
     updateBar(trials, speed)
     confidenceInterval([], speed)
+    svg.select("line").remove()
 }
 
 //button for generating a new trial.
@@ -191,7 +187,6 @@ probOfSuccess.noUiSlider.on('change', function(values, handle, unencoded){ //wha
         p_of_success = +values
         // updatePoints(rawData, confLevel, sizeVal)
         // take the given value, reset all the trials and start new.
-
         reset() //reset the visualization
         theta = p_of_success //change the theta.
     })
@@ -220,7 +215,6 @@ altHypothesis.noUiSlider.on('update', function(values, handle, unencoded){ //wha
 
 altHypothesis.noUiSlider.on('change', function(values, handle, unencoded){ //what to do when the slider is dropped.
         altHypothesisVal = +values
-        //put function to do here.
         currentPVal = binomHypothesis(trials.length, numSuccess(trials), altHypothesisVal)
         var dispPVal = Math.round(currentPVal*1000)/1000
         d3.select("#pValue").text(dispPVal == 0? "<0.001": dispPVal)
