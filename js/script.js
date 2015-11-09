@@ -114,7 +114,8 @@ function addResult(res){
     confidenceInterval(trials, speed)
     //code will need to go here for updating hypothesis pval
     currentPVal = binomHypothesis(trials.length, numSuccess(trials), altHypothesisVal)
-    d3.select("#pValue").text(currentPVal)
+    var dispPVal = Math.round(currentPVal*1000)/1000
+    d3.select("#pValue").text(dispPVal == 0? "<0.001": dispPVal)
 }
 
 //this doesn't work. Fix it later.
@@ -221,5 +222,6 @@ altHypothesis.noUiSlider.on('change', function(values, handle, unencoded){ //wha
         altHypothesisVal = +values
         //put function to do here.
         currentPVal = binomHypothesis(trials.length, numSuccess(trials), altHypothesisVal)
-        d3.select("#pValue").text(currentPVal)
+        var dispPVal = Math.round(currentPVal*1000)/1000
+        d3.select("#pValue").text(dispPVal == 0? "<0.001": dispPVal)
     })
