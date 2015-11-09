@@ -16,6 +16,7 @@
 
 <div class = "menuSection">
     <h1>Binomially Distributed Fun!</h1>
+    <hr>
     <p>Click the button to generate a result from a Bernoulli trial. As you generate
         more results you get wonderfully <a href = "https://en.wikipedia.org/wiki/Binomial_distribution">
         binomially distributed </a> data.
@@ -28,22 +29,37 @@
         Note how the confidence interval changes as you
         generate more trials and the p-value shifts depending on your most recent Bernoulli trial.
     </p>
-    <h2>Probability of Success</h2>
+    <h3>Probability of Success</h3>
     <p>Choose your probability of success: </p>
 
     <div id = "probOfSuccess" class = "valueSlider col-md-12"></div>
     <p></p>
-</div
+</div>
+
 <hr>
 
 <div class = "menuSection">
-    <h2>Hypothesized Probability</h2>
+    <h3>Hypothesized Probability</h3>
 
     <p class = "bottomPadding"> Choose your null hypothesis: </p>
 
     <div id = "altHypothesis" class = "valueSlider col-md-12"></div>
+</div>
+<hr>
+<div class = "menuSection">
 
-    <h2 class = "topPadding"> P-Value: <span id = "pValue"></span></h3>
+    <h3>Results:</h3>
+    <p>Note: you can also type in a custom number of trials and successes and hit
+        submit to update the visualization. </p>
+    <form>
+      <span class = "results"> Number of trials:</span>
+      <input type="text" name="trials" id = "customN" size="8">
+      <span class = "results"> Number of successes:</span>
+      <input type="text" name="successes" id = "customX" size="8">
+    <input type="button" onclick="customNX()" value="Submit">
+    </form>
+
+    <span class = "results"> P-Value: <span id = "pValue"></span></h3>
 </div>
 
 </div>
