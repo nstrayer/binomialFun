@@ -12,30 +12,59 @@
 <script src = "js/nouislider.min.js"></script>
 
 <div id = "header"><h1></h1></div>
-<div id = "menu" class = "col-md-4 col-sm-12">
+<div id = "menu" class = "col-md-4 col-md-offset-1 col-sm-12">
 
 <div class = "menuSection">
-    <h2> Probability of Success</h2>
-    <p> Choose your probability of success: </p>
+    <h1>Binomially Distributed Fun!</h1>
+    <hr>
+    <p>Click the button to generate a result from a Bernoulli trial. As you generate
+        more results you get wonderfully <a href = "https://en.wikipedia.org/wiki/Binomial_distribution">
+        binomially distributed </a> data.
+    </p>
+    <p>Play around with the the parameters of the underlying Bernoulli trials and
+        the null hypothesis (two-sided) to more throughly understand the behavior
+        of the Binomial distribution and of its accompanying
+        <a href = "http://andrewgelman.com/2010/12/21/lets_say_uncert/"> confidence intervals </a>
+        and <a href = "https://en.wikipedia.org/wiki/Statistical_hypothesis_testing"> hypothesis tests.</a>
+        Note how the confidence interval changes as you
+        generate more trials and the p-value shifts depending on your most recent Bernoulli trial.
+    </p>
+    <h3>Probability of Success</h3>
+    <p>Choose your probability of success: </p>
 
     <div id = "probOfSuccess" class = "valueSlider col-md-12"></div>
     <p></p>
-</div
+</div>
+
 <hr>
 
 <div class = "menuSection">
-    <h2>Hypothesized Probability</h2>
+    <h3>Hypothesized Probability</h3>
+
+    <p class = "bottomPadding"> Choose your null hypothesis: </p>
 
     <div id = "altHypothesis" class = "valueSlider col-md-12"></div>
-    <p></p>
-    <p> Choose your althernative hypothesis of success: </p>
+</div>
+<hr>
+<div class = "menuSection">
 
-    <p> P-Value <span id = "pValue"></span></p>
+    <h3>Results:</h3>
+    <p>Note: you can also type in a custom number of trials and successes and hit
+        submit to update the visualization. </p>
+    <form>
+      <span class = "results"> Number of trials:</span>
+      <input type="text" name="trials" id = "customN" size="8">
+      <span class = "results"> Number of successes:</span>
+      <input type="text" name="successes" id = "customX" size="8">
+    <input type="button" onclick="customNX()" value="Submit">
+    </form>
+
+    <span class = "results"> P-Value: <span id = "pValue"></span></h3>
 </div>
 
 </div>
 
-<div id = "viz" class = "col-md-8 col-sm-12"></div>
+<div id = "viz" class = "col-md-6 col-sm-12"></div>
 
 
 <script src = "js/statsFunctions.js"></script>

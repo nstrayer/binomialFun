@@ -45,3 +45,13 @@ strong.choosen{
 .menuSection {
     padding-bottom: 20px;
 }
+
+.topPadding {
+        padding-top: 35px;
+}
+
+svg text::selection { background: none; }
+
+.results {
+    font-weight: bold;
+}
