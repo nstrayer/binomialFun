@@ -29,7 +29,7 @@ var CIScale = d3.scale.linear()
 //make a g for holding the progressbar and confidence interval.
 var trialViz = d3.select("svg").append("g")
     .attr("class", "trialViz")
-    .attr("transform", "translate(0,300)")
+    .attr("transform", "translate(0,400)")
 
 function updateBar(trials, speed){
     barX.domain(d3.range(trials.length)) //update bar scale
@@ -51,7 +51,6 @@ function updateBar(trials, speed){
         .attr("text-anchor", function(d,i){return i == 0 ? "start": "end"})
         .attr("fill", function(d,i){return i == 0 ? successColor: failColor})
         .attr("font-size", 20)
-        // .attr("font-weight", "bold")
 
     var progressBar = trialViz.selectAll(".progressBar")
         .data(trials, function(d){return d.id})
@@ -91,7 +90,7 @@ function updateBar(trials, speed){
 var confInt = d3.select("svg")
     .append("g")
     .attr("class", "confidenceInterval")
-    .attr("transform", "translate(0,350)")
+    .attr("transform", "translate(0,450)")
 
 //Draws the confidence interval for the current trials.
 function confidenceInterval(trials, speed){
