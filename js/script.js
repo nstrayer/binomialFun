@@ -67,38 +67,90 @@ function updateBar(trials, speed){
         .style("stroke-width", trials.length > 150 ? 0 : 0.5) //dont have borders if there are a lot of trials
 }
 
+var confInt = d3.select("svg")
+    .append("g")
+    .attr("class", "confidenceInterval")
+    .attr("transform", "translate(0,350)")
+
 //Draws the confidence interval for the current trials.
 function confidenceInterval(trials, speed){
 
     //get our data on the interval by extracting trial results
-    var intervalData = [wilsonInterval(trials.map(function(d){return d.v}))];
+    var intervalData = wilsonInterval(trials.map(function(d){return d.v}));
 
-    var confInt = trialViz.selectAll("line")
-        .data(intervalData, function(d,i){return i;})
+    var confInt_line = confInt.selectAll("line")
+        .data([intervalData], function(d,i){return i;})
 
-    confInt.exit()
-        .transition().duration(800)
+    confInt_line.exit()
+        .transition().duration(speed)
         .attr("x1", width/2)
         .attr("x2", width/2)
         .remove()
 
-    confInt
+    confInt_line
         .transition().duration(speed)
         .attr("x1", function(d){ return CIScale(d.lb)})
         .attr("x2", function(d){ return CIScale(d.ub)})
 
-    confInt.enter()
+    confInt_line.enter()
         .append("line")
         .attr("class", "confidenceInterval")
         .attr("x1", width/2)
         .attr("x2", width/2)
-        .attr("y1", 350)
-        .attr("y2", 350)
         .attr("stroke", "black")
-        .attr("stroke-width", "2")
+        .attr("stroke-width", "1")
         .transition().duration(speed)
-        .attr("x1", function(d){ return CIScale(d.lb)})
-        .attr("x2", function(d){ return CIScale(d.ub)})
+        .attr("x1", function(d){ return CIScale(d.lb) + 18})
+        .attr("x2", function(d){ return CIScale(d.ub) - 18})
+
+    //bubbles for ends of ci.
+    confInt_ends = confInt.selectAll("circle")
+        .data([intervalData.lb, intervalData.ub])
+
+    confInt_ends.exit()
+        .transition().duration(speed)
+        .attr("cx", width/2)
+        .attr("r", 0)
+
+    confInt_ends
+        .transition().duration(speed)
+        .attr("cx", function(d){ return CIScale(d)})
+        .attr("r", 18)
+
+    confInt_ends.enter()
+        .append("circle")
+        .attr("cx", function(d){ return CIScale(d)})
+        .attr("r", 0)
+        .attr("fill", "white")
+        .attr("stroke", "black")
+        .attr("stroke-width", 1)
+        .transition().duration(800)
+        .attr("cx", function(d){ return CIScale(d)})
+        .attr("r", 18)
+
+    //bubbles for ends of ci.
+    confInt_nums = confInt.selectAll("text")
+        .data([intervalData.lb, intervalData.ub])
+
+    confInt_nums.exit()
+        .transition().duration(speed)
+        .attr("x", width/2)
+        .attr("font-size", 0)
+
+    confInt_nums
+        .transition().duration(speed)
+        .attr("x", function(d){ return CIScale(d)})
+        .text(function(d){return Math.round(d*100)/100;;})
+
+    confInt_nums.enter()
+        .append("text")
+        .attr("x", function(d){ return CIScale(d)})
+        .attr("y", 4)
+        .attr("text-anchor", "middle")
+        .attr("font-size", 12)
+        .text(function(d){return Math.round(d*1000)/1000;})
+        .transition().duration(800)
+        .attr("x", function(d){ return CIScale(d)})
 }
 
 
@@ -146,9 +198,11 @@ function customNX(){
 function reset(){
     idCounter = 1 //reset counter
     trials = [] // empty trials storage
-    updateBar(trials, speed)
-    confidenceInterval([], speed)
-    svg.select("line").remove()
+    updateBar(trials, speed) //draw an empty trials bar.
+
+    confInt.selectAll("line").remove() //remove confidence interval stuff.
+    confInt.selectAll("circle").remove()
+    confInt.selectAll("text").remove()
 
     //update the n and x boxes too.
     document.getElementById("customN").value = 0;
@@ -170,6 +224,8 @@ genButton.append("rect")
     .attr("width", 150)
     .attr("height", 40)
     .attr("fill", buttonColor )
+    .attr("stroke", "black")
+    .attr("stroke-width", 1)
     .attr("opacity", 0.5)
     .on("click", function(){ addResult(bern(theta)) })
 
