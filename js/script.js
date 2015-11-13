@@ -115,6 +115,7 @@ function confidenceInterval(trials, speed){
     confInt_ends
         .transition().duration(speed)
         .attr("cx", function(d){ return CIScale(d)})
+        .attr("r", 18)
 
     confInt_ends.enter()
         .append("circle")
