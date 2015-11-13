@@ -27,10 +27,31 @@ var CIScale = d3.scale.linear()
     .range([padding*3,width - padding*3]);
 
 //make a g for holding the progressbar and confidence interval.
-var trialViz = d3.select("svg").append("g").attr("class", "trialViz")
+var trialViz = d3.select("svg").append("g")
+    .attr("class", "trialViz")
+    .attr("transform", "translate(0,300)")
 
 function updateBar(trials, speed){
     barX.domain(d3.range(trials.length)) //update bar scale
+
+    legendText = trials.length > 0 ? ["Successes", "Failures"] : []
+
+    var progressBar_legend = trialViz.selectAll(".legend")
+        .data(legendText)
+
+    progressBar_legend.exit()
+        .transition().duration(speed)
+        .attr("font-size", 0)
+
+    progressBar_legend.enter()
+        .append("text")
+        .text(function(d){return d;})
+        .attr("x", function(d,i){return i == 0 ? padding*3: width - padding*3})
+        .attr("y", -10)
+        .attr("text-anchor", function(d,i){return i == 0 ? "start": "end"})
+        .attr("fill", function(d,i){return i == 0 ? successColor: failColor})
+        .attr("font-size", 20)
+        // .attr("font-weight", "bold")
 
     var progressBar = trialViz.selectAll(".progressBar")
         .data(trials, function(d){return d.id})
@@ -38,7 +59,7 @@ function updateBar(trials, speed){
     progressBar.exit()
         .transition().duration(speed)
         .delay(function(d, i) { return trials.length > 150 ? 0: (trials.length - i) * 15; })
-        .attr("y", -10)
+        .attr("y", -150)
         .attr("width", 0)
         .attr("height", 0)
         .remove()
@@ -47,7 +68,7 @@ function updateBar(trials, speed){
         .transition().duration(0)
         .attr("x", function(d,i){return barX(i)})
         .attr("width", barX.rangeBand())
-        .attr("y", 300)
+        .attr("y", 0)
         .attr("fill", function(d){ return d.v == 1 ? successColor : failColor})
         .style("stroke-width", trials.length > 150 ? 0 : 0.5)
 
@@ -55,11 +76,11 @@ function updateBar(trials, speed){
         .append("rect")
         .attr("class", "progressBar")
         .attr("x", width/2)
-        .attr("y", -10)
+        .attr("y", -150)
         .attr("width", 20)
         .transition().duration(speed)
         .attr("x", function(d,i){return barX(i)})
-        .attr("y", 300)
+        .attr("y", 0)
         .attr("width", barX.rangeBand())
         .attr("height", 20)
         .attr("fill", function(d){ return d.v == 1 ? successColor : failColor})
@@ -203,6 +224,7 @@ function reset(){
     confInt.selectAll("line").remove() //remove confidence interval stuff.
     confInt.selectAll("circle").remove()
     confInt.selectAll("text").remove()
+    trialViz.selectAll("text").remove()
 
     //update the n and x boxes too.
     document.getElementById("customN").value = 0;
