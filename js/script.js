@@ -98,7 +98,7 @@ function confidenceInterval(trials, speed){
         .attr("x1", width/2)
         .attr("x2", width/2)
         .attr("stroke", "black")
-        .attr("stroke-width", "2")
+        .attr("stroke-width", "1")
         .transition().duration(speed)
         .attr("x1", function(d){ return CIScale(d.lb) + 18})
         .attr("x2", function(d){ return CIScale(d.ub) - 18})
@@ -123,7 +123,7 @@ function confidenceInterval(trials, speed){
         .attr("r", 0)
         .attr("fill", "white")
         .attr("stroke", "black")
-        .attr("stroke-width", 2)
+        .attr("stroke-width", 1)
         .transition().duration(800)
         .attr("cx", function(d){ return CIScale(d)})
         .attr("r", 18)
@@ -198,9 +198,11 @@ function customNX(){
 function reset(){
     idCounter = 1 //reset counter
     trials = [] // empty trials storage
-    updateBar(trials, speed)
-    confidenceInterval([], speed)
-    svg.select("line").remove()
+    updateBar(trials, speed) //draw an empty trials bar.
+
+    confInt.selectAll("line").remove() //remove confidence interval stuff.
+    confInt.selectAll("circle").remove()
+    confInt.selectAll("text").remove()
 
     //update the n and x boxes too.
     document.getElementById("customN").value = 0;
@@ -222,6 +224,8 @@ genButton.append("rect")
     .attr("width", 150)
     .attr("height", 40)
     .attr("fill", buttonColor )
+    .attr("stroke", "black")
+    .attr("stroke-width", 1)
     .attr("opacity", 0.5)
     .on("click", function(){ addResult(bern(theta)) })
 
