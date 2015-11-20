@@ -21,7 +21,7 @@ function bern(p){ return(Math.random() < p ? 1 : 0)}
 // n = number of trials to simulate
 // p = probability of success
 // Returns:
-// a vector of trials. 
+// a vector of trials.
 function binomialDraw(n,p){
     trials = []
     for(var i = 0; i < n; i++){trials.push(bern(p))}
@@ -63,8 +63,8 @@ function wilsonInterval(trials){
 }
 
 
-
 // gaussian error function
+// Used to simulate the normal cdf. 
 function errorFunction(x) {
     var t = 1 / (1 + 0.5 * Math.abs(x));
     var tau = t * Math.exp(-Math.pow(x, 2) -
