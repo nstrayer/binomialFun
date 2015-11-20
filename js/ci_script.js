@@ -3,13 +3,12 @@ var width = parseInt(d3.select("#viz").style("width").slice(0, -2)),
     height = $(window).height() - 30,
     padding = 20,
     speed = 400,
-    theta = 0.5, //global theta.
-    currentPVal,
-    trials = [],
     failColor = "#e41a1c"
     successColor = "#377eb8",
     buttonColor = "#4daf4a",
-    numIntervals = 100;
+    numIntervals = 100,
+    numTrials = 50,
+    theta = 0.5; //global theta.
 
 var svg = d3.select("#viz").append("svg")
     .attr("width", width)
@@ -40,7 +39,7 @@ genButton.append("rect")
     .attr("stroke", "black")
     .attr("stroke-width", 1)
     .attr("opacity", 0.5)
-    .on("click", function(){ drawIntervals(makeCIs(100,200,theta)) })
+    .on("click", function(){ drawIntervals(makeCIs(numIntervals,numTrials,theta)) })
 
 genButton.append("text")
     .attr("text-anchor", "middle")
@@ -79,6 +78,12 @@ function drawIntervals(CIs){
 
     confInt_lines
         .transition().duration(speed)
+        .attr("x1", width/2)
+        .attr("x2", width/2)
+        .attr("y1", 65)
+        .attr("y2", 65)
+        .transition().duration(speed)
+        .delay(function(d,i){return 10*i;})
         .attr("x1", function(d){ return CI_x(d.lb)})
         .attr("x2", function(d){ return CI_x(d.ub)})
         .attr("y1", function(d,i){return CI_y(i)})
@@ -96,8 +101,8 @@ function drawIntervals(CIs){
         .attr("class", "intervals")
         .attr("x1", width/2)
         .attr("x2", width/2)
-        .attr("y1", function(d,i){return CI_y(i)})
-        .attr("y2", function(d,i){return CI_y(i)})
+        .attr("y1", 65)
+        .attr("y2", 65)
         .attr("stroke", function(d,i){
             if(d.lb < theta && d.ub > theta){
                 return successColor;
@@ -107,42 +112,47 @@ function drawIntervals(CIs){
         })
         .attr("stroke-width", "1")
         .transition().duration(speed)
+        .delay(function(d,i){return 10*i;})
         .attr("x1", function(d){ return CI_x(d.lb)})
         .attr("x2", function(d){ return CI_x(d.ub)})
+        .attr("y1", function(d,i){return CI_y(i)})
+        .attr("y2", function(d,i){return CI_y(i)})
 }
+
+function reset(){drawIntervals([])} //empty the visualization.
 
 
 //--------------------------------------------------------------------------------------------
 //Slider stuff: ------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------
 
-// var probOfSuccess = document.getElementById('probOfSuccess');
-//
-// noUiSlider.create(probOfSuccess, {
-// 	start: 0.5,
-// 	range: { min: 0, max: 1 },
-// });
-//
-// var tipHandles = probOfSuccess.getElementsByClassName('noUi-handle'),
-// 	   tooltips = [];
-//
-// // Add divs to the slider handles.I hate how clunky this is. Maybe submit a pr to the repo?
-// for ( var i = 0; i < tipHandles.length; i++ ){
-// 	tooltips[i] = document.createElement('div');
-// 	tipHandles[i].appendChild(tooltips[i]);
-// }
-//
-// probOfSuccess.noUiSlider.on('update', function(values, handle, unencoded){ //what to do when the slider is moved.
-//         tooltips[handle].innerHTML = values[handle];
-//     })
-//
-// probOfSuccess.noUiSlider.on('change', function(values, handle, unencoded){ //what to do when the slider is dropped.
-//         p_of_success = +values
-//         // updatePoints(rawData, confLevel, sizeVal)
-//         // take the given value, reset all the trials and start new.
-//         reset() //reset the visualization
-//         theta = p_of_success //change the theta.
-//     })
+var probOfSuccess = document.getElementById('probOfSuccess');
+
+noUiSlider.create(probOfSuccess, {
+	start: 0.5,
+	range: { min: 0, max: 1 },
+});
+
+var tipHandles = probOfSuccess.getElementsByClassName('noUi-handle'),
+	   tooltips = [];
+
+// Add divs to the slider handles.I hate how clunky this is. Maybe submit a pr to the repo?
+for ( var i = 0; i < tipHandles.length; i++ ){
+	tooltips[i] = document.createElement('div');
+	tipHandles[i].appendChild(tooltips[i]);
+}
+
+probOfSuccess.noUiSlider.on('update', function(values, handle, unencoded){ //what to do when the slider is moved.
+        tooltips[handle].innerHTML = values[handle];
+    })
+
+probOfSuccess.noUiSlider.on('change', function(values, handle, unencoded){ //what to do when the slider is dropped.
+        p_of_success = +values
+        // updatePoints(rawData, confLevel, sizeVal)
+        // take the given value, reset all the trials and start new.
+        reset() //reset the visualization
+        theta = p_of_success //change the theta.
+    })
 //
 // //Alternative hypothesis slider
 // var altHypothesis = document.getElementById('altHypothesis');
