@@ -49,7 +49,6 @@ genButton.append("text")
     .style("user-select", "none")
 
 
-
 //Function to generate a bunch of confidence intervals
 // Generate m confidence intervals using n trials with success p
 // Returns json of the cis.
@@ -63,6 +62,37 @@ function makeCIs(m,n,p){
 
 var intervalViz = d3.select("svg").append("g")
     .attr("class", "intervalViz")
+
+//Function to draw and move the true theta vertical line
+function trueTheta(t){
+
+    var thetaLine = intervalViz.selectAll(".thetaLine")
+        .data([t])
+
+    thetaLine.exit()
+        .transition().duration(speed)
+        .attr("x1", width/2)
+        .attr("x2", width/2)
+        .remove()
+
+    thetaLine
+        .transition().duration(speed)
+        .attr("x1", function(d){return CI_x(d);})
+        .attr("x2", function(d){return CI_x(d);})
+        .attr("y2", height - padding)
+        .attr("stroke", "black")
+        .attr("stroke-width", 2)
+
+    thetaLine.enter()
+        .append("line")
+        .attr("class", "thetaLine")
+        .attr("x1", function(d){return CI_x(d);})
+        .attr("x2", function(d){return CI_x(d);})
+        .attr("y1", 70)
+        .attr("y2", height - padding)
+        .attr("stroke", "black")
+        .attr("stroke-width", 2)
+}
 
 function drawIntervals(CIs){
     CI_y.domain(d3.range(CIs.length)) //update the domain
@@ -119,8 +149,14 @@ function drawIntervals(CIs){
         .attr("y2", function(d,i){return CI_y(i)})
 }
 
+//Grab and display the number of accurate confidence intervals
+function scoreReport(CIs){
+
+}
+
 function reset(){drawIntervals([])} //empty the visualization.
 
+trueTheta(theta)
 
 //--------------------------------------------------------------------------------------------
 //Slider stuff: ------------------------------------------------------------------------------
@@ -144,14 +180,15 @@ for ( var i = 0; i < tipHandles.length; i++ ){
 
 probOfSuccess.noUiSlider.on('update', function(values, handle, unencoded){ //what to do when the slider is moved.
         tooltips[handle].innerHTML = values[handle];
+        p_of_success = +values
+        theta = p_of_success //change the theta.
+        trueTheta(theta)
     })
 
 probOfSuccess.noUiSlider.on('change', function(values, handle, unencoded){ //what to do when the slider is dropped.
         p_of_success = +values
-        // updatePoints(rawData, confLevel, sizeVal)
         // take the given value, reset all the trials and start new.
         reset() //reset the visualization
-        theta = p_of_success //change the theta.
     })
 //
 // //Alternative hypothesis slider
