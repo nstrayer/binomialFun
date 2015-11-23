@@ -1,0 +1,76 @@
+</html>
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel = "stylesheet">
+
+<script type = "text/javascript" src="js/jquery.min.js"></script>
+<script src = "js/d3.min.js"></script>
+<link href  = "js/nouislider.css" rel="stylesheet">
+<link href  = "js/nouislider.pips.css" rel="stylesheet">
+<script src = "js/nouislider.min.js"></script>
+<body>
+    <div id = "header"><h1></h1></div>
+    <div id = "menu" class = "col-md-4 col-md-offset-1 col-sm-12">
+
+    <div class = "menuSection">
+        <h1>Confidence Intervals!</h1>
+        <hr>
+        <p>Click the button to generate confidence intervals!</p>
+        <h3>Probability of Success</h3>
+        <p>Choose the probability of success (theta) for your binomial draw:</p>
+
+        <div id = "probOfSuccess" class = "valueSlider col-md-12"></div>
+
+        <p class = "topPadding">Note how when the selected theta is close to 0 or 1 the true coverage % of the interval changes.</p>
+    </div>
+
+    <hr>
+
+    <div class = "menuSection">
+        <h3>Number of Simulations</h3>
+
+        <p class = "bottomPadding"> Choose the number of simulations you want to run: </p>
+
+        <div id = "numOfSims" class = "valueSlider col-md-12"></div>
+
+        <p class = "topPadding">The more simulations you run the closer the observed
+            coverage percentange is to the true coverage of the interval. This may not be 95%.</p>
+    </div>
+    <hr>
+    <div class = "menuSection">
+
+        <h3>Results:</h3>
+
+        <table>
+          <tr>
+            <td>Incorrect intervals:</td>
+            <td id = "numOutOfBounds">24</td>
+          </tr>
+          <tr>
+            <td>True coverage %:</td>
+            <td id = "coverage">56%</td>
+          </tr>
+        </table>
+
+    </div>
+
+    </div>
+
+    <div id = "viz" class = "col-md-6 col-sm-12"></div>
+</body>
+
+<script src = "js/statsFunctions.js"></script>
+<script src = "js/ci_script.js"></script>
+<script src = "js/bootstrap.min.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-53965157-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
