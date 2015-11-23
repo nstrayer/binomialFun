@@ -11,11 +11,22 @@ function sumArray(arr){
 function numSuccess(trials){ return sumArray(trials.map(function(d){return d.v})) }
 
 
-
 // Bernoulli trial function.
 // This function takes the parameter p, which is the probability of success.
 // It returns either a 1 (success) or 0 (failure)
 function bern(p){ return(Math.random() < p ? 1 : 0)}
+
+// Binomial trial draw.
+// input:
+// n = number of trials to simulate
+// p = probability of success
+// Returns:
+// a vector of trials.
+function binomialDraw(n,p){
+    trials = []
+    for(var i = 0; i < n; i++){trials.push(bern(p))}
+    return trials;
+}
 
 // Wald interval function 95%
 // Input:
@@ -52,8 +63,8 @@ function wilsonInterval(trials){
 }
 
 
-
 // gaussian error function
+// Used to simulate the normal cdf. 
 function errorFunction(x) {
     var t = 1 / (1 + 0.5 * Math.abs(x));
     var tau = t * Math.exp(-Math.pow(x, 2) -
