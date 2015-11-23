@@ -6,7 +6,7 @@ var width = parseInt(d3.select("#viz").style("width").slice(0, -2)),
     failColor = "#e41a1c"
     successColor = "#377eb8",
     buttonColor = "#4daf4a",
-    numIntervals = 100,
+    numIntervals = 200,
     numTrials = 50,
     theta = 0.5; //global theta.
 
@@ -39,7 +39,11 @@ genButton.append("rect")
     .attr("stroke", "black")
     .attr("stroke-width", 1)
     .attr("opacity", 0.5)
-    .on("click", function(){ drawIntervals(makeCIs(numIntervals,numTrials,theta)) })
+    .on("click", function(){
+        var CIs = makeCIs(numIntervals,numTrials,theta)
+        drawIntervals(CIs)
+        scoreReport(CIs)
+    })
 
 genButton.append("text")
     .attr("text-anchor", "middle")
@@ -55,7 +59,8 @@ genButton.append("text")
 function makeCIs(m,n,p){
     CIs = []
     for(var i = 0; i < m; i++){
-        CIs.push(waldInterval(binomialDraw(n,p)))
+        // CIs.push(waldInterval(binomialDraw(n,p)))
+        CIs.push(wilsonInterval(binomialDraw(n,p)))
     }
     return CIs;
 }
@@ -65,7 +70,6 @@ var intervalViz = d3.select("svg").append("g")
 
 //Function to draw and move the true theta vertical line
 function trueTheta(t){
-
     var thetaLine = intervalViz.selectAll(".thetaLine")
         .data([t])
 
@@ -82,6 +86,7 @@ function trueTheta(t){
         .attr("y2", height - padding)
         .attr("stroke", "black")
         .attr("stroke-width", 2)
+        .attr("opacity", 0.5)
 
     thetaLine.enter()
         .append("line")
@@ -93,6 +98,9 @@ function trueTheta(t){
         .attr("stroke", "black")
         .attr("stroke-width", 2)
 }
+
+//does our confidence interval contain the true theta?
+function containsTheta(d){ return (d.lb < theta && d.ub > theta)? true : false; }
 
 function drawIntervals(CIs){
     CI_y.domain(d3.range(CIs.length)) //update the domain
@@ -118,13 +126,7 @@ function drawIntervals(CIs){
         .attr("x2", function(d){ return CI_x(d.ub)})
         .attr("y1", function(d,i){return CI_y(i)})
         .attr("y2", function(d,i){return CI_y(i)})
-        .attr("stroke", function(d,i){
-            if(d.lb < theta && d.ub > theta){
-                return successColor;
-            } else {
-                return failColor;
-            }
-        })
+        .attr("stroke", function(d,i){return containsTheta(d)?successColor:failColor;})
 
     confInt_lines.enter()
         .append("line")
@@ -133,13 +135,7 @@ function drawIntervals(CIs){
         .attr("x2", width/2)
         .attr("y1", 65)
         .attr("y2", 65)
-        .attr("stroke", function(d,i){
-            if(d.lb < theta && d.ub > theta){
-                return successColor;
-            } else {
-                return failColor;
-            }
-        })
+        .attr("stroke", function(d,i){return containsTheta(d)?successColor:failColor;})
         .attr("stroke-width", "1")
         .transition().duration(speed)
         .delay(function(d,i){return 10*i;})
@@ -151,7 +147,13 @@ function drawIntervals(CIs){
 
 //Grab and display the number of accurate confidence intervals
 function scoreReport(CIs){
+    var outOfBounds = 0
+    CIs.forEach(function(d){containsTheta(d)? 0 : outOfBounds++ })
 
+    //update the values in the report table
+    d3.select("#numOutOfBounds").text(outOfBounds)
+    d3.select("#coverage").text(Math.round((1 - outOfBounds/CIs.length) * 1000) / 1000 + "%")
+    // return {"outOfBounds": outOfBounds, "coverage": 1 - outOfBounds/CIs.length};
 }
 
 function reset(){drawIntervals([])} //empty the visualization.
@@ -190,31 +192,28 @@ probOfSuccess.noUiSlider.on('change', function(values, handle, unencoded){ //wha
         // take the given value, reset all the trials and start new.
         reset() //reset the visualization
     })
-//
-// //Alternative hypothesis slider
-// var altHypothesis = document.getElementById('altHypothesis');
-//
-// noUiSlider.create(altHypothesis, {
-//     start: 0.5,
-// 	range: { min: 0, max: 1 },
-// });
-//
-// var tipHandles2 = altHypothesis.getElementsByClassName('noUi-handle'),
-// 	   tooltips2 = [];
-//
-// // Add divs to the slider handles.I hate how clunky this is. Maybe submit a pr to the repo?
-// for ( var i = 0; i < tipHandles2.length; i++ ){
-// 	tooltips2[i] = document.createElement('div');
-// 	tipHandles2[i].appendChild(tooltips2[i]);
-// }
-//
-// altHypothesis.noUiSlider.on('update', function(values, handle, unencoded){ //what to do when the slider is moved.
-//         tooltips2[handle].innerHTML = values[handle];
-// })
-//
-// altHypothesis.noUiSlider.on('change', function(values, handle, unencoded){ //what to do when the slider is dropped.
-//         altHypothesisVal = +values
-//         currentPVal = binomHypothesis(trials.length, numSuccess(trials), altHypothesisVal)
-//         var dispPVal = Math.round(currentPVal*1000)/1000
-//         d3.select("#pValue").text(dispPVal == 0? "<0.001": dispPVal)
-// })
+
+//Number of simulations slider
+var numSimSlider = document.getElementById('numOfSims');
+
+noUiSlider.create(numSimSlider, {
+    start: 100,
+	range: { min: 1, max: 500 },
+});
+
+var tipHandles2 = numSimSlider.getElementsByClassName('noUi-handle'),
+	   tooltips2 = [];
+
+// Add divs to the slider handles.I hate how clunky this is. Maybe submit a pr to the repo?
+for ( var i = 0; i < tipHandles2.length; i++ ){
+	tooltips2[i] = document.createElement('div');
+	tipHandles2[i].appendChild(tooltips2[i]);
+}
+
+numSimSlider.noUiSlider.on('update', function(values, handle, unencoded){ //what to do when the slider is moved.
+        tooltips2[handle].innerHTML = Math.round(values[handle]);
+})
+
+numSimSlider.noUiSlider.on('change', function(values, handle, unencoded){ //what to do when the slider is dropped.
+        numIntervals = Math.round(+values) //change the number of intervals to draw.
+})

@@ -32,22 +32,24 @@
 
         <p class = "bottomPadding"> Choose your null hypothesis: </p>
 
-        <div id = "altHypothesis" class = "valueSlider col-md-12"></div>
+        <div id = "numOfSims" class = "valueSlider col-md-12"></div>
     </div>
     <hr>
     <div class = "menuSection">
 
         <h3>Results:</h3>
 
-        <form>
-          <span class = "results"> Number of trials:</span>
-          <input type="text" name="trials" id = "customN" size="8">
-          <span class = "results"> Number of successes:</span>
-          <input type="text" name="successes" id = "customX" size="8">
-        <input type="button" onclick="customNX()" value="Submit">
-        </form>
+        <table>
+          <tr>
+            <td>Incorrect intervals:</td>
+            <td id = "numOutOfBounds">24</td>
+          </tr>
+          <tr>
+            <td>True coverage %:</td>
+            <td id = "coverage">56%</td>
+          </tr>
+        </table>
 
-        <span class = "results"> P-Value: <span id = "pValue"></span></h3>
     </div>
 
     </div>
