@@ -137,12 +137,79 @@ function drawIntervals(CIs){
         .attr("y2", 65)
         .attr("stroke", function(d,i){return containsTheta(d)?successColor:failColor;})
         .attr("stroke-width", "1")
+        .on("mouseover", function(d,i){
+            moreInfo(d,i)
+            d3.select(this).attr("stroke-width", "3")
+        })
+        .on("mouseout", function(d,i){
+            removeInfo()
+            d3.select(this).attr("stroke-width", "1")
+        })
         .transition().duration(speed)
         .delay(function(d,i){return 10*i;})
         .attr("x1", function(d){ return CI_x(d.lb)})
         .attr("x2", function(d){ return CI_x(d.ub)})
         .attr("y1", function(d,i){return CI_y(i)})
         .attr("y2", function(d,i){return CI_y(i)})
+}
+
+function moreInfo(currentInt, location){
+    //bubbles for ends of ci.
+    confInt_ends = intervalViz.selectAll("circle")
+        .data([currentInt.lb, currentInt.ub])
+
+    confInt_ends.exit()
+        .transition().duration(200)
+        .attr("cx", width/2)
+        .attr("r", 0)
+
+    confInt_ends
+        .transition().duration(speed)
+        .attr("cx", function(d){ return CI_x(d)})
+        .attr("cy", CI_y(location))
+        .attr("r", 18)
+
+    confInt_ends.enter()
+        .append("circle")
+        .attr("cy", CI_y(location))
+        .attr("cx", function(d){ return CI_x(d)})
+        .attr("r", 0)
+        .attr("fill", "white")
+        .attr("stroke", "black")
+        .attr("stroke-width", 1)
+        .transition().duration(200)
+        .attr("r", 18)
+
+    //bubbles for ends of ci.
+    confInt_nums = intervalViz.selectAll("text")
+        .data([currentInt.lb, currentInt.ub])
+
+    confInt_nums.exit()
+        .transition().duration(speed)
+        .attr("x", function(d){ return CI_x(d)})
+        .attr("font-size", 0)
+
+    confInt_nums
+        .transition().duration(speed)
+        .attr("x", function(d){ return CI_x(d)})
+        .attr("y", CI_y(location) + 4)
+        .text(function(d){return Math.round(d*100)/100;;})
+
+    confInt_nums.enter()
+        .append("text")
+        .attr("x", function(d){ return CI_x(d)})
+        .attr("y", CI_y(location) + 4)
+        .attr("text-anchor", "middle")
+        .attr("font-size", 1)
+        .text(function(d){return Math.round(d*1000)/1000;})
+        .transition().duration(800)
+        .attr("x", function(d){ return CI_x(d)})
+        .attr("font-size", 12)
+}
+
+function removeInfo(){
+    intervalViz.selectAll("circle").remove()
+    intervalViz.selectAll("text").remove()
 }
 
 //Grab and display the number of accurate confidence intervals
