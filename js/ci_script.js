@@ -6,7 +6,7 @@ var width = parseInt(d3.select("#viz").style("width").slice(0, -2)),
     failColor = "#e41a1c"
     successColor = "#377eb8",
     buttonColor = "#4daf4a",
-    numIntervals = 200,
+    numIntervals = 100,
     numTrials = 50,
     theta = 0.5; //global theta.
 
@@ -136,14 +136,17 @@ function drawIntervals(CIs){
         .attr("y1", 65)
         .attr("y2", 65)
         .attr("stroke", function(d,i){return containsTheta(d)?successColor:failColor;})
-        .attr("stroke-width", "1")
+        .attr("stroke-width", "2")
+        .attr("opacity", 0.5)
         .on("mouseover", function(d,i){
             moreInfo(d,i)
-            d3.select(this).attr("stroke-width", "3")
+            d3.select(this).attr("stroke-width", "4")
+                .attr("opacity", 1)
         })
         .on("mouseout", function(d,i){
             removeInfo()
-            d3.select(this).attr("stroke-width", "1")
+            d3.select(this).attr("stroke-width", "2")
+                .attr("opacity", 0.5)
         })
         .transition().duration(speed)
         .delay(function(d,i){return 10*i;})
@@ -153,6 +156,7 @@ function drawIntervals(CIs){
         .attr("y2", function(d,i){return CI_y(i)})
 }
 
+//function called on mouse over of the confint lines to show bounds.
 function moreInfo(currentInt, location){
     //bubbles for ends of ci.
     confInt_ends = intervalViz.selectAll("circle")
@@ -202,7 +206,7 @@ function moreInfo(currentInt, location){
         .attr("text-anchor", "middle")
         .attr("font-size", 1)
         .text(function(d){return Math.round(d*1000)/1000;})
-        .transition().duration(800)
+        .transition().duration(200)
         .attr("x", function(d){ return CI_x(d)})
         .attr("font-size", 12)
 }
